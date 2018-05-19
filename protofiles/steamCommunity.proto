@@ -1,0 +1,37 @@
+syntax = "proto3";
+package SteamCommunity;
+
+option csharp_namespace = "RpcCommunicationSteamCommunity";
+
+//these endpoints is on the nodejs server
+service ChatService {
+
+    rpc Ping (EmptyMessage) returns (EmptyMessage) {
+    }
+
+    rpc GetPriceHistoryForItem (PriceHistoryForItemRequest) returns(PriceHistoryForItemResponse){
+        
+    }
+    
+
+}
+
+message PriceHistoryForItemRequest {
+    int32 appId = 1;
+    string MarketHashName = 2;
+}
+message PriceHistoryForItemResponse {
+    bool Success = 1;
+    repeated Price Prices = 2;
+}
+
+
+message Price {
+    string Time = 1;
+    int32 AmountSold = 2;
+    double MedianPrice = 3;
+}
+
+message EmptyMessage {
+}
+

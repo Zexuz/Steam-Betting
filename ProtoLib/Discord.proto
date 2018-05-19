@@ -1,0 +1,140 @@
+syntax = "proto3";
+package ChatCommunication;
+
+option csharp_namespace = "RpcCommunicationDiscord";
+
+service DiscordService {
+
+    rpc AddUser (AddUserRequest) returns (AddUserResponse);
+    rpc Ping (PingRequest) returns (PingResponse);
+    rpc SendPersonalMessage (PersonalMessageRequest) returns (PersonalMessageResponse);
+
+    rpc GlobalExceptionError (GlobalExceptionErrorRequest) returns (EmptyResponse);
+    rpc CoinFlipCreate (CoinFlipCreateRequest) returns (EmptyResponse);
+    rpc CoinFlipJoin (CoinFlipJoinRequest) returns (EmptyResponse);
+    rpc ChatMessage (ChatMessageRequest) returns (EmptyResponse);
+    rpc JackpotBet (JackpotBetRequest) returns (EmptyResponse);
+    rpc UserLogin (UserLoginRequest) returns (EmptyResponse);
+    rpc JackpotWinner (JackpotWinnerRequest) returns (EmptyResponse);
+    rpc CoinFlipWinner (CoinFlipWinnerRequest) returns (EmptyResponse);
+
+}
+
+message GlobalExceptionErrorRequest {
+    ExceptionMessage error = 1;
+}
+
+message CoinFlipCreateRequest {
+    CoinFlipCreateMessage request = 1;
+}
+
+message CoinFlipJoinRequest {
+    CoinFlipJoinMessage request = 1;
+}
+
+message ChatMessageRequest {
+    ChatMessageMessage request = 1;
+}
+
+message JackpotBetRequest {
+    JackpotBetMessage request = 1;
+}
+
+message UserLoginRequest {
+    UserLoginMessage request = 1;
+}
+
+message JackpotWinnerRequest {
+    JackpotWinnerMessage request = 1;
+}
+
+message CoinFlipWinnerRequest {
+    CoinFlipWinnerMessage request = 1;
+}
+
+
+message EmptyResponse {
+
+}
+
+
+message PersonalMessageRequest {
+    string message = 1;
+    string steamId = 2;
+}
+
+
+message PersonalMessageResponse {
+}
+
+message UserBettedResponse {
+}
+
+message PingRequest {
+}
+
+message PingResponse {
+}
+
+message AddUserRequest {
+    string Id = 1;
+    string steamId = 2;
+}
+
+message AddUserResponse {
+
+}
+
+message CoinFlipCreateMessage {
+    string userId = 1;
+    string coinFlipId = 2;
+    bool allowPubg = 3;
+    bool allowCsgo = 4;
+    double value = 5;
+}
+
+message CoinFlipJoinMessage {
+    string userId = 1;
+    string coinFlipId = 2;
+    double value = 5;
+}
+
+message CoinFlipWinnerMessage {
+    string coinFlipId = 1;
+    double totalValue = 2;
+}
+
+message ChatMessageMessage {
+    string name = 1;
+    string message = 2;
+}
+
+message JackpotBetMessage {
+    string userId = 1;
+    double value = 2;
+    string roundId = 3;
+}
+
+message JackpotWinnerMessage {
+    string roundId = 1;
+    double value = 2;
+}
+
+message ExceptionMessage {
+    string corelcationId = 1;
+    string userId = 2;
+    string location = 3;
+    string exceptionMessage = 4;
+}
+
+message UserLoginMessage {
+    string userId = 1;
+    string name = 2;
+}
+
+enum GameModes {
+    none = 0;
+    Jackpot = 1;
+    CoinFlip = 2;
+    Upgrade = 3;
+}

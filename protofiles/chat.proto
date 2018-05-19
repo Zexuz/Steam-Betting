@@ -1,0 +1,103 @@
+syntax = "proto3";
+package ChatCommunication;
+
+option csharp_namespace = "RpcCommunicationChat";
+
+//these endpoints is on the nodejs server
+service ChatService {
+
+    rpc Ping (EmptyMessage) returns (EmptyMessage) {
+    }
+
+    //Sends message
+    rpc InsertMessage (InsertMessageRequest) returns (InsertMessageResponse) {
+    }
+    //"On connect" Gets the 10 latest messages in db.
+    rpc GetLatestMessages (GetLatestMessagesRequest) returns (MessagesResponse) {
+    }
+
+    //Only for staff.
+    rpc MuteUser (MuteUserRequest) returns (MuteUserResponse) {
+    }
+
+    rpc GetMutedUsers (EmptyMessage) returns (MutedUsersResponse) { //Get muted users
+    }
+
+    rpc UnMuteUser (UnMuteUserRequest) returns (EmptyMessage) { //Unmute user
+    }
+
+    rpc GetMessagesOnParams (GetMessagesOnParamsRequest) returns (MessagesResponse) {
+    }
+
+}
+
+message EmptyMessage{}
+
+message GetMessagesOnParamsRequest {//None field is required
+    string steamId = 1;
+    string startTime = 2;
+    string endTime = 3;
+}
+
+message MessagesResponse {
+    repeated ChatMessage chatMessage = 1;
+}
+
+message GetLatestMessagesRequest {
+    int32 messagesAmount = 1;
+}
+
+message InsertMessageRequest {
+    ChatMessage chatMessage = 1;
+    int32 antiSpamSeconds = 2;
+    bool ignoreRules = 3;
+}
+
+message InsertMessageResponse {
+    oneof Data{
+        ChatMessage chatMessage = 1; //Broadcast to all, including "original message sender"
+        Error error = 2; //Send to "original message sender" only
+    }
+}
+
+//      MuteUser       //
+message MuteUserRequest {//Input from admin only
+    string steamId = 1;
+    int32 seconds = 2;
+    string reason = 3;
+}
+
+message MuteUserResponse {//Send back to admin for confirmation, maybe also to the banned user?
+    string steamId = 1;
+    int32 expires = 2; //seconds until mute expires
+    string reason = 3;
+}
+
+message UnMuteUserRequest {
+    string steamId = 1;
+}
+
+message MutedUsersResponse {
+    repeated MutedUsers mutedUsers = 1;
+}
+
+message ChatMessage {
+    string name = 1;
+    string image = 2;
+    string message = 3;
+    string userType = 4;
+    string steamId = 5;
+    string timestamp = 6; //Only on response
+}
+
+message Error{
+    string message = 1;
+}
+
+message MutedUsers {
+    string steamId = 1;
+    int32 expires = 2; //seconds until mute expires
+    string reason = 3;
+    int32 seconds = 4;
+    string timestamp = 5;
+}

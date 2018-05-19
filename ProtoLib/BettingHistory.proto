@@ -1,0 +1,63 @@
+syntax = "proto3";
+package ChatCommunication;
+
+option csharp_namespace = "RpcCommunicationHistory";
+
+service Bettingv1HisotryService {
+    rpc GetGlobalHistory (GetGlobalHistoryRequest) returns (MatchResponse);
+    rpc GetPersonalHistory (GetPersonalHistoryRequest) returns (MatchResponse);
+    rpc Ping (PingRequest) returns (PingResponse);
+}
+
+message GetGlobalHistoryRequest {
+    int32 offset = 1;
+    int32 limt = 2;
+}
+message GetPersonalHistoryRequest {
+    int32 offset = 1;
+    int32 limt = 2;
+    string steamId = 3;
+}
+
+message MatchResponse {
+    PaginationResponse pagaination = 1;
+    repeated MatchHistory data = 2;
+}
+
+
+message PaginationResponse {
+    int32 total = 1;
+    int32 offset = 2;
+}
+
+message MatchHistory {
+    int32 RoundId = 1;
+    string Created = 2;
+    double Value = 4;
+    User Winner = 3;
+    repeated Item Items = 5;
+    repeated UserBet Bets = 6;
+}
+
+message Item {
+    string Name = 1;
+    double Value = 2;
+    string ImageUrl = 3;
+}
+
+message UserBet {
+    User user = 1;
+    repeated Item Items = 2;
+}
+
+message User {
+    string name = 1;
+    string steamId = 3;
+    string imageUrl = 2;
+}
+
+message PingRequest {
+}
+
+message PingResponse {
+}

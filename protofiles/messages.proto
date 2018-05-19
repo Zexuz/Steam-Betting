@@ -1,0 +1,447 @@
+syntax = "proto3";
+package WebsocketCommunication;
+
+option csharp_namespace = "RpcCommunication";
+
+//these endpoints is on the nodejs server
+service SteamService {
+    rpc GetPlayerSteamInventory (GetPlayerSteamInventoryRequest) returns (GetPlayerSteamInventoryResponse) {
+    }
+    rpc MakeOffer (MakeOfferRequest) returns (MakeOfferResponse) {
+    }
+    rpc GetPlayerInfo (GetPlayerInfoRequest) returns (GetPlayerInfoResponse) {
+    }
+    rpc GetPlayerBackground (GetPlayerBackgroundRequest) returns (GetPlayerBackgroundResponse) {
+    }
+    rpc SellItems (SellItemsFromOpskinsBotRequest) returns (SellItemsFromOpskinsBotResponse) {
+    }
+    rpc WithdrawBtcOpskins (WithdrawBtcOpskinsRequest) returns (WithdrawBtcOpskinsResponse) {
+    }
+    rpc AccountBalanceOpskins (AccountBalanceOpskinsRequest) returns (AccountBalanceOpskinsResponse) {
+    }
+    rpc StartAllBots (StartAllBotsRequest) returns (StartAllBotsResponse) {
+    }
+    rpc StopAllBots (StopAllBotsRequest) returns (StopAllBotsResponse) {
+    }
+    rpc GetOfferLogg (GetOfferLoggRequest) returns (GetOfferLoggResponse) {
+    }
+    rpc GetOpskinsLogg (GetOpskinsLoggRequest) returns (GetOpskinsLoggResponse) {
+    }
+    rpc GetExceptionLogg (GetExceptionLoggRequest) returns (GetExceptionLoggResponse) {
+    }
+    rpc GetBotLogg (GetBotLoggRequest) returns (GetBotLoggResponse) {
+    }
+    rpc GetBotLoginInfo (GetBotLoginInfoRequest) returns (GetBotLoginInfoResponse) {
+    }
+    rpc Ping (EmptyMessage) returns (EmptyMessage) {
+    }
+}
+
+message GetPlayerBackgroundRequest{
+    string steamId = 1;
+}
+
+message GetPlayerBackgroundResponse{
+    oneof Data {
+        string backgroundUrl = 1;
+        Error error = 2;
+    }
+}
+
+message EmptyMessage{}
+
+message GetBotLoginInfoRequest{
+        Bot bot = 1;
+}
+message GetBotLoginInfoResponse{
+        oneof Data {
+            BotInfo botInfo = 1;
+            Error error = 2;
+        }
+}
+
+message BotInfo {
+    Bot bot = 1;
+    string password = 2;
+    string authCode = 3;
+    string accountId = 4;
+    string tradeLink = 5;
+    string statusMessage = 6; //Either all info if bot is online, or just login info if offline
+}
+
+message GetOfferLoggRequest{
+    //Search params
+    string steamId = 1;
+    int32 statusCode = 2;
+    string offerId = 3;
+    Bot bot = 4;
+    int32 page = 5;
+}
+
+message GetOpskinsLoggRequest{
+    int32 statusCode = 1;
+    int32 page = 2;
+}
+
+message GetExceptionLoggRequest{
+    int32 page = 1;
+}
+message GetBotLoggRequest{
+    int32 statusCode = 1;
+    Bot bot = 2;
+    int32 page = 3;
+}
+
+message GetOfferLoggResponse {
+    repeated OfferStatusRequest data = 1;
+    PaginationInfo pages = 2;
+}
+
+message GetOpskinsLoggResponse {
+    repeated SellItemsFromOpskinsBotResponse data = 1;
+    PaginationInfo pages = 2;
+}
+message GetExceptionLoggResponse {
+    repeated Exception data = 1;
+    PaginationInfo pages = 2;
+}
+message GetBotLoggResponse {
+    repeated BotStatusChangedRequest data = 1;
+    PaginationInfo pages = 2;
+}
+
+message PaginationInfo {
+    int32 total = 1;
+    int32 limit = 2;
+    int32 offset = 3;
+    int32 page = 4;
+    int32 pages = 5;
+}
+
+
+message Exception{
+    string errorMessage = 1;
+    string timestamp = 2;
+}
+
+message AccountBalanceOpskinsRequest {
+
+}
+
+message AccountBalanceOpskinsResponse{
+    oneof Data {
+        OpskinsAccountBalance accountBalance = 1;
+        Error error = 2;
+    }
+}
+message OpskinsAccountBalance {
+    int32 totalBalance = 1;
+    int32 pendingCashoutBalance = 2;
+    int32 depositedBalance = 3;
+    int32 cashoutableBalance = 4;
+}
+
+message WithdrawBtcOpskinsRequest {
+    int32 amount = 1; //in cents
+}
+
+message WithdrawBtcOpskinsResponse{
+    oneof Data {
+        bool success = 1;
+        Error error = 2;
+    }
+}
+
+//This is for the c# web api server "onOfferSatusChange"
+service StatusChanged {
+    rpc OfferStatusChanged (OfferStatusRequest) returns (OfferStatusResponse) {
+    }
+    rpc SteamStatusChanged (SteamStatusRequest) returns (SteamStatusResponse) {
+    }
+    rpc BotStatusChanged (BotStatusChangedRequest) returns (BotStatusChangedResponse) {
+    }
+    rpc OpskinsStatusChanged (OpskinsStatusChangedRequest) returns (OpskinsStatusChangedResponse) {
+    }
+}
+
+//      Steam Status    //
+message SteamStatusRequest {
+    int32 statusCode = 1;
+    string statusMessage = 2;
+    string message = 3;
+    Bot bot = 4;
+    string timestamp = 5;
+}
+
+message SteamStatusResponse {
+
+}
+
+//      Bot Status      //
+message BotStatusChangedRequest {
+    int32 statusCode = 1;
+    string statusMessage = 2;
+    Bot bot = 3;
+    string message = 4;
+    string timestamp = 5;
+}
+message BotStatusChangedResponse {
+
+}
+
+//      Opskins        //
+message OpskinsStatusChangedRequest {
+    int32 statusCode = 1;
+    string statusMessage = 2;
+    opskinsError error = 3;
+    string timestamp = 4;
+}
+message OpskinsStatusChangedResponse {
+
+}
+
+//      GetPlayerInfo       //
+message GetPlayerInfoRequest {
+    string steamId = 1;
+}
+
+message GetPlayerInfoResponse {
+    oneof Data {
+        PlayerInfo playerInfo = 1;
+        Error error = 2;
+    }
+}
+
+message PlayerInfo {
+    string steamId = 1;
+    string personaName = 2;
+    string avatar = 3;
+    string avatarMedium = 4;
+    string avatarFull = 5;
+    string onlineState = 6;
+    string profilePrivacyState = 7;
+    string tradeBanState = 8;
+    bool isLimitedAccount = 9;
+    repeated string groupsSteamid64 = 10;
+    string memberSince = 11;
+}
+
+// Offer Status Request //
+message OfferStatusRequest {
+    int32 statusCode = 1;
+    string statusMessage = 2;
+    string steamId = 3;
+    Bot bot = 4;
+    oneof Data {
+        OfferStatusError error = 5;
+        OfferStatusOffer offerSend = 6;
+    }
+    //Below is extradata for logs
+    string timestamp = 7;
+    repeated Item inputItems = 8;
+    bool sendItem = 9;
+}
+
+message OfferStatusError {
+    string message = 1;
+}
+
+message OfferStatusOffer {
+    SteamOffer steamOffer = 3;
+}
+
+message OfferStatusResponse {
+    bool itIsHandled = 1; //Send this back to the bot to notify the bot that it's handled. (Making sure c# is online and not an crazy error occured) This if so we don't miss and offerstatus
+}
+
+//      Get Player Inventory //
+message GetPlayerSteamInventoryResponse {
+    oneof Data {
+        PlayerResponseItems playerInventory = 1;
+        Error error = 2;
+    }
+}
+
+message GetPlayerSteamInventoryRequest {
+    string steamId = 1;
+    Inventory inventoryToFetch = 2;
+}
+
+message PlayerResponseItems {
+    repeated Item items = 1;
+}
+
+message Inventory {
+    int32 appId = 1;
+    string contextId = 2;
+}
+
+//      Make Offer      //
+message MakeOfferRequest {
+    User user = 1;
+    string botName = 2;
+    string message = 3;
+    bool sendItems = 4;
+    repeated Item items = 5;
+}
+
+message MakeOfferResponse {
+    Bot bot = 1;
+    string steamId = 2;
+    int32 statusCode = 3;
+    string statusMessage = 4;
+    oneof Data {
+        Offer offer = 5;
+        Error error = 6;
+    }
+}
+
+message Offer {
+    SteamOffer steamOffer = 3;
+}
+
+message User {
+    string steamId = 1;
+    string tradeLink = 2;
+}
+
+
+message SteamOffer {
+    Partner partner = 1;
+    string id = 2;
+    string message = 3;
+    int32 state = 4;
+    repeated Item itemsToGive = 5;
+    repeated Item itemsToReceive = 6;
+    bool isOurOffer = 7;
+    string unixtimeCreated = 8;
+    string unixtimeUpdated = 9;
+    string unixtimeExpires = 10;
+    int32 confirmationMethod = 11;
+}
+
+message Partner {
+    int32 universe = 1;
+    int32 type = 2;
+    int32 instance = 3;
+    int32 accountId = 4;
+}
+
+message Item {
+    int32 appId = 1;
+    string contextId = 2;
+    string assetId = 3;
+    string classId = 4;
+    string instanceId = 5;
+    int32 amount = 6;
+    string iconUrl = 7;
+    string iconUrlLarge = 8;
+    string name = 9;
+    string marketHashName = 10;
+    string marketName = 11;
+    string nameColor = 12;
+    string backgroundColor = 13;
+    string type = 14;
+    bool tradable = 15;
+    bool marketable = 16;
+    bool commodity = 17;
+    int32 marketTradableRestriction = 18;
+}
+
+// Start All Bots //
+message StartAllBotsRequest {
+
+}
+message StartAllBotsResponse {
+    string responseMessage = 1;
+}
+
+// Stop All Bots //
+message StopAllBotsRequest {
+
+}
+message StopAllBotsResponse {
+    string responseMessage = 1;
+}
+
+//      Sell items      //
+message SellItemsFromOpskinsBotRequest {
+    int32 appId = 1;
+    string contextId = 2;
+}
+
+message SellItemsFromOpskinsBotResponse {
+    int32 statusCode = 1;
+    string statusMessage = 2;
+    oneof Data {
+        opskinsError error = 3;
+        opskinsItems items = 4;
+    }
+    string timestamp = 5;
+}
+
+message opskinsError {
+    string message = 1;
+    repeated OpskinItem rejectedItems = 2;
+}
+
+message opskinsItems {
+    repeated OpskinItem acceptedItems = 3;
+    repeated OpskinItem rejectedItems = 4;
+}
+
+message OpskinItem {
+    string classId = 1;
+    string instanceId = 2;
+    string assetId = 3;
+    int32 instantsellCredits = 4;
+    int32 instantsellMoney = 5;
+    int32 amount = 6;
+    string contextId = 7;
+    int32 appId = 8;
+    string errMessage = 9;
+}
+
+
+message opskinsRejectedItem {
+    int32 appId = 1;
+    string contextId = 2;
+    string assetId = 3;
+    string classId = 4;
+    string instaceId = 5;
+
+    int32 amount = 6;
+    string errMessage = 7;
+
+    int32 instantSellCredits = 8;
+    int32 instantSellMoney = 9;
+}
+
+message opskinsAcceptedItem {
+    int32 appId = 1;
+    string contextId = 2;
+    string assetId = 3;
+    string classId = 4;
+    string instaceId = 5;
+    int32 amount = 6;
+    int32 instantSellCredits = 7;
+    int32 instantSellMoney = 8;
+}
+
+
+// error //
+message Error {
+    string message = 1;
+}
+
+message Bot{
+    string username = 1;
+    string steamId = 2;
+    botType botType = 3;
+}
+
+enum botType{
+    notSet = 0;
+    offerVendor = 1;
+    opskins = 2;
+}

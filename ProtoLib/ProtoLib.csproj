@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="..\createFile.bat">
+      <Link>createFile.bat</Link>
+    </Content>
+    <Content Include="..\protofiles\chat.proto">
+      <Link>chat.proto</Link>
+    </Content>
+    <Content Include="..\protofiles\messages.proto">
+      <Link>messages.proto</Link>
+    </Content>
+    <Content Include="..\protofiles\steamCommunity.proto">
+      <Link>steamCommunity.proto</Link>
+    </Content>
+    <Content Include="..\protofiles\ticket.proto">
+      <Link>ticket.proto</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.5.1" />
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.5.1" />
+    <PackageReference Include="Grpc" Version="1.8.3" />
+    <PackageReference Include="Grpc.Core" Version="1.8.3" />
+    <PackageReference Include="Grpc.Tools" Version="1.8.3" />
+  </ItemGroup>
+</Project>

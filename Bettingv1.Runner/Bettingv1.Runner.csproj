@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Bson" Version="2.5.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.5.0" />
+    <PackageReference Include="MongoDB.Driver.Core" Version="2.5.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bettingv1.Models\Bettingv1.Models.csproj" />
+    <ProjectReference Include="..\ProtoLib\ProtoLib.csproj">
+      <Project>{DAB52446-5513-4DFE-9C95-90C637B6AB22}</Project>
+      <Name>ProtoLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Shared.Shared\Shared.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Grpc.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d754f35622e28bad">
+      <HintPath>C:\Users\dekstop\.nuget\packages\grpc.core\1.8.3\lib\netstandard1.5\Grpc.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

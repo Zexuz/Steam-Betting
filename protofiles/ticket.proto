@@ -1,0 +1,146 @@
+syntax = "proto3";
+package TicketCommunication;
+
+option csharp_namespace = "RpcCommunicationTicket";
+
+//these endpoints is on the nodejs server
+service TicketService {
+    //USER
+    //Skapa en ny ticket.
+    rpc UserCreateTicket (UserCreateTicketRequest) returns (SingleTicketResponse) {
+    }
+    //Svara på ticket.
+    rpc UserRespondToTicket (UserRespondToTicketRequest) returns (SingleTicketResponse) {
+    }
+    //Retunerar alla tickets på användaren
+    rpc UserGetAllTickets (Steamid) returns (ListTicketsResponse) {
+    }
+    //Antal tickets på användaren som har read = false. tex. 2st notifikationer i headern.
+    rpc UserCountUnreadTickets (Steamid) returns (UserCountUnreadTicketsResponse) {
+    }
+    //Markera ticketen som "read = true", dvs ingen notifikation i headern tex.
+    rpc UserMarkTicketAsRead (UserMarkTicketAsReadRequest) returns (SingleTicketResponse) {
+    }
+
+    rpc Ping (EmptyMessage) returns (EmptyMessage) {
+    }
+
+    //ADMIN
+    //Skapar en ny ticket, detta är för att vi t.ex. kontakta någon eller kunna skapa en ticket åt någon som spammar i chatten.
+    rpc AdminCreateTicket (AdminCreateTicketRequest) returns (SingleTicketResponse) {
+    }
+    //Svara på en ticket
+    rpc AdminRespondToTicket (AdminRespondToTicketRequest) returns (SingleTicketResponse) {
+    }
+    //Ändra status på ticket
+    rpc AdminChangeStatusOnTicket (AdminChangeStatusOnTicketRequest) returns (SingleTicketResponse) {
+    }
+    //Lista tickets
+    rpc AdminGetTicketsOnQuery (AdminGetTicketsOnQueryRequest) returns (ListTicketsResponse) {
+    }
+}
+
+message EmptyMessage{}
+
+// USER Endpoints
+message UserMarkTicketAsReadRequest{
+    string steamId = 1; //Should not be user input, append via api
+    string ticketId = 2;
+}
+
+message Steamid {
+    string steamId = 1; //Should not be user input, append via api
+}
+
+message UserCountUnreadTicketsResponse {
+    int32 amount = 1;
+}
+
+message UserRespondToTicketRequest {
+    string steamId = 1; //Should not be user input, append via api
+    string ticketId = 2;
+    InputMessage message = 3;
+}
+
+message UserCreateTicketRequest {
+    string steamId = 1; //Should not be user input, append via api
+    string title = 2;
+    InputMessage message = 3;
+}
+
+
+//ADMIN Endpoints
+message AdminGetTicketsOnQueryRequest {
+    string ticketId = 1;        //optional
+    string steamId = 2;         //optional (allow admin input)
+    TicketStatus status = 3;    //optional
+}
+
+message AdminCreateTicketRequest {
+    string steamId = 1; //Admin can put any steamid.
+    string title = 2;
+    InputMessage message = 3;
+}
+
+message AdminChangeStatusOnTicketRequest{
+    string ticketId = 1;
+    TicketStatus status = 2;
+}
+
+message AdminRespondToTicketRequest{
+    string ticketId = 1;
+    InputMessage message = 3;
+}
+
+//Data types
+message InputMessage{
+    string messageBody = 1;
+    string name = 2; //optional, why not (kan vara bra för oss att upptäcka spelaren i tex chatten)?
+}
+
+message ResponseMessage{
+    string messageBody = 1;
+    string steamId = 2;
+    string name = 3;
+    string timestamp = 4;
+}
+
+message ListTicketsResponse {
+    oneof Data{
+        TicketsArray tickets = 1;
+        Error error = 2;
+    }
+}
+
+message SingleTicketResponse {
+    oneof Data{
+        Ticket ticket = 1;
+        Error error = 2;
+    }
+}
+
+message TicketsArray{
+    repeated Ticket ticketList = 1;
+}
+
+message Ticket{
+    string ticketId = 1;
+    string timestamp = 2;
+    string title = 3;
+    string steamId = 4;
+    string status = 5;
+    bool read = 6; //Has user read the ticket
+    repeated ResponseMessage messages = 7;
+}
+
+enum TicketStatus{
+    empty = 0;
+    new = 1;        //User created a new ticket.
+    answered = 2;   //Admin have responded to ticket.
+    open = 3;       //User has responded to ticket.
+    closed = 4;     //Ticket is closed
+}
+
+message Error{
+    string message = 1;
+}
